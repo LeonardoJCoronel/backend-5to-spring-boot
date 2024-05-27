@@ -2,7 +2,6 @@ package proyecto.proyecto.demo.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -13,7 +12,7 @@ import jakarta.persistence.Table;
 public class CuidadorEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private int id;
     private boolean estado;
     private int rating;
@@ -41,6 +40,14 @@ public class CuidadorEntity {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    public UsuarioEntity getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioEntity usuario) {
+        this.usuario = usuario;
     }
 
 

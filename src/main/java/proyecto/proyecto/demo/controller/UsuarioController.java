@@ -54,15 +54,21 @@ public class UsuarioController {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked", "unlikely-arg-type" })
-    @PostMapping("/saveCuidador")
+    @PostMapping("/save")
     public ResponseEntity<?> saveUsuario(@RequestBody UsuarioEntity nuevoUsuario, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity(new MensajeDto("Campos mal colocados o email invalido"), HttpStatus.BAD_REQUEST);
         }
-        UsuarioEntity usuario = new UsuarioEntity(nuevoUsuario.getNombre(), nuevoUsuario.getApellido(), nuevoUsuario.getCorreo(), nuevoUsuario.getContrasenia());
+        UsuarioEntity usuario = new UsuarioEntity(nuevoUsuario.getId(),nuevoUsuario.getNombre(), nuevoUsuario.getApellido(),
+                nuevoUsuario.getCorreo(), nuevoUsuario.getContrasenia(), nuevoUsuario.getFechaRegistro(),
+                nuevoUsuario.isEsAceptado(), nuevoUsuario.isEstado());
         Set<RolEntity> roles = new HashSet<>();
-        roles.add(rolService.getByRolNombre(RolEnum.ROL_CUIDADOR).get());
-        if (nuevoUsuario.getRoles().contains("admin")) {
+        if (nuevoUsuario.getRoles().contains("ROL_CUIDADOR")) {
+            roles.add(rolService.getByRolNombre(RolEnum.ROL_CUIDADOR).get());
+        }else if (nuevoUsuario.getRoles().contains("ROL_PROPIETARIO")) {
+            roles.add(rolService.getByRolNombre(RolEnum.ROL_PROPIETARIO).get());
+        }
+        if (nuevoUsuario.getRoles().contains("ROL_ADMIN")) {
             roles.add(rolService.getByRolNombre(RolEnum.ROL_ADMIN).get());
         }
         usuario.setRoles(roles);
@@ -81,10 +87,10 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteUsuario(@PathVariable("id") int id){
+    public void deleteUsuario(@PathVariable("id") int id) {
         if (!usuarioService.existById(id)) {
             throw new ResourceNotFoundException("Usuario", "id", id);
-        }else{
+        } else {
             usuarioService.deleteUsuario(id);
         }
     }

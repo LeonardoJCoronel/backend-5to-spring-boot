@@ -1,5 +1,6 @@
 package proyecto.proyecto.demo.entity;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -19,28 +21,41 @@ import jakarta.persistence.OneToMany;
 public class UsuarioEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nombre;
     private String apellido;
     private String correo;
     private String contrasenia;
+    private LocalDateTime fechaRegistro;
+    private Boolean esAceptado;
+    private Boolean estado;
 
     @ManyToMany
-    @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))
+    @JoinTable(
+        name = "usuario_rol",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "rol_id")
+    )
     private Set<RolEntity> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<DireccionEntity> direcciones;
 
     public UsuarioEntity() {
+        // Constructor sin parámetros requerido por JPA
     }
 
-    public UsuarioEntity(String nombre, String apellido, String correo, String contrasenia) {
+    public UsuarioEntity(int id, String nombre, String apellido, String correo, String contrasenia,
+            LocalDateTime fechaRegistro, Boolean esAceptado, Boolean estado) {
+        this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.contrasenia = contrasenia;
+        this.fechaRegistro = fechaRegistro;
+        this.esAceptado = esAceptado;
+        this.estado = estado;
     }
 
     public int getId() {
@@ -100,8 +115,31 @@ public class UsuarioEntity {
     }
 
     public List<Integer> getDireccionesIds() {
-        return direcciones != null ? 
-            direcciones.stream().map(DireccionEntity::getId).collect(Collectors.toList()) : Collections.emptyList();
+        return direcciones != null ? direcciones.stream().map(DireccionEntity::getId).collect(Collectors.toList())
+                : Collections.emptyList();
     }
-    
+
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    public Boolean isEsAceptado() {
+        return esAceptado;
+    }
+
+    public void setEsAceptado(Boolean esAceptado) {
+        this.esAceptado = esAceptado;
+    }
+
+    public Boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
+    }
 }

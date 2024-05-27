@@ -8,7 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import proyecto.proyecto.demo.entity.UsuarioEntity;
+import proyecto.proyecto.demo.dto.RolEnum;
+import proyecto.proyecto.demo.entity.CuidadorEntity;
+import proyecto.proyecto.demo.entity.PropietarioEntity;
 import proyecto.proyecto.demo.exceptions.ResourceNotFoundException;
+import proyecto.proyecto.demo.repository.CuidadorRepository;
+import proyecto.proyecto.demo.repository.PropietarioRepository;
 import proyecto.proyecto.demo.repository.UsuarioRepository;
 
 @Service
@@ -17,6 +22,12 @@ public class UsuarioService {
 
     @Autowired
     UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private CuidadorRepository cuidadorRepository;
+
+    @Autowired
+    private PropietarioRepository propietarioRepository;
 
     public List<UsuarioEntity> getList() {
         return usuarioRepository.findAll();
@@ -30,8 +41,19 @@ public class UsuarioService {
         return usuarioRepository.existsById(id);
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     public void saveUsuario(UsuarioEntity usuario) {
-        usuarioRepository.save(usuario);
+        UsuarioEntity guardarUsuario = usuarioRepository.save(usuario);
+        if (guardarUsuario.getRoles().contains(RolEnum.ROL_CUIDADOR)) {
+            CuidadorEntity cuidador = new CuidadorEntity(true, 0);
+            cuidador.setUsuario(guardarUsuario);
+            cuidadorRepository.save(cuidador);
+        }else if(guardarUsuario.getRoles().contains(RolEnum.ROL_PROPIETARIO)){
+            PropietarioEntity propietario = new PropietarioEntity(true);
+            propietario.setUsuario(guardarUsuario);
+            propietarioRepository.save(propietario);
+        }
+        
     }
 
     public void deleteUsuario(Integer id) {

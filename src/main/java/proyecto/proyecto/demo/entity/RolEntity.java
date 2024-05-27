@@ -2,7 +2,6 @@ package proyecto.proyecto.demo.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.EnumType;
@@ -14,7 +13,7 @@ import proyecto.proyecto.demo.dto.RolEnum;
 public class RolEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private int id;
 
     @Enumerated(EnumType.STRING)
@@ -28,7 +27,6 @@ public class RolEntity {
         this.rolNombre = rolNombre;
     }
 
-    // Constructor que acepta una cadena como argumento
     public RolEntity(String rolNombre) {
         this.rolNombre = RolEnum.valueOf(rolNombre);
     }
