@@ -10,7 +10,6 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -21,7 +20,7 @@ import jakarta.persistence.OneToMany;
 public class UsuarioEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private int id;
     private String nombre;
     private String apellido;
@@ -30,13 +29,11 @@ public class UsuarioEntity {
     private LocalDateTime fechaRegistro;
     private Boolean esAceptado;
     private Boolean estado;
+    private String identificacion;
+    private String telefono;
 
     @ManyToMany
-    @JoinTable(
-        name = "usuario_rol",
-        joinColumns = @JoinColumn(name = "usuario_id"),
-        inverseJoinColumns = @JoinColumn(name = "rol_id")
-    )
+    @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))
     private Set<RolEntity> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
@@ -47,7 +44,7 @@ public class UsuarioEntity {
     }
 
     public UsuarioEntity(int id, String nombre, String apellido, String correo, String contrasenia,
-            LocalDateTime fechaRegistro, Boolean esAceptado, Boolean estado) {
+            LocalDateTime fechaRegistro, Boolean esAceptado, Boolean estado, String identificacion, String telefono) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -56,6 +53,8 @@ public class UsuarioEntity {
         this.fechaRegistro = fechaRegistro;
         this.esAceptado = esAceptado;
         this.estado = estado;
+        this.identificacion = identificacion;
+        this.telefono = telefono;
     }
 
     public int getId() {
@@ -141,5 +140,21 @@ public class UsuarioEntity {
 
     public void setEstado(Boolean estado) {
         this.estado = estado;
+    }
+
+    public String getIdentificacion() {
+        return identificacion;
+    }
+
+    public void setIdentificacion(String identificacion) {
+        this.identificacion = identificacion;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 }

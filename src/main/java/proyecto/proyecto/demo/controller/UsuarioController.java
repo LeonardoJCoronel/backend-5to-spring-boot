@@ -53,28 +53,24 @@ public class UsuarioController {
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked", "unlikely-arg-type" })
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @PostMapping("/save")
     public ResponseEntity<?> saveUsuario(@RequestBody UsuarioEntity nuevoUsuario, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity(new MensajeDto("Campos mal colocados o email invalido"), HttpStatus.BAD_REQUEST);
         }
-        UsuarioEntity usuario = new UsuarioEntity(nuevoUsuario.getId(),nuevoUsuario.getNombre(), nuevoUsuario.getApellido(),
-                nuevoUsuario.getCorreo(), nuevoUsuario.getContrasenia(), nuevoUsuario.getFechaRegistro(),
-                nuevoUsuario.isEsAceptado(), nuevoUsuario.isEstado());
+
         Set<RolEntity> roles = new HashSet<>();
-        if (nuevoUsuario.getRoles().contains("ROL_CUIDADOR")) {
-            roles.add(rolService.getByRolNombre(RolEnum.ROL_CUIDADOR).get());
-        }else if (nuevoUsuario.getRoles().contains("ROL_PROPIETARIO")) {
-            roles.add(rolService.getByRolNombre(RolEnum.ROL_PROPIETARIO).get());
+        for (RolEntity rol : nuevoUsuario.getRoles()) {
+            RolEnum rolEnum = RolEnum.valueOf(rol.getRolNombre().name());
+            roles.add(rolService.getByRolNombre(rolEnum).orElseThrow(() -> new ResourceNotFoundException("Rol", "rolNombre", nuevoUsuario.getId())));
         }
-        if (nuevoUsuario.getRoles().contains("ROL_ADMIN")) {
-            roles.add(rolService.getByRolNombre(RolEnum.ROL_ADMIN).get());
-        }
-        usuario.setRoles(roles);
-        usuarioService.saveUsuario(usuario);
+        nuevoUsuario.setRoles(roles);
+
+        usuarioService.saveUsuario(nuevoUsuario);
         return new ResponseEntity(new MensajeDto("Usuario guardado"), HttpStatus.CREATED);
     }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<UsuarioEntity> updateUsuario(@RequestBody UsuarioEntity usuario, @PathVariable("id") int id) {
