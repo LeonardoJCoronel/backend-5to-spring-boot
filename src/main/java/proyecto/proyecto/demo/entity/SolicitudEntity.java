@@ -22,6 +22,7 @@ public class SolicitudEntity {
     private Timestamp fechaRegistro;
     private boolean esAceptado;
     private boolean estado;
+    private float paga;
 
     @ManyToOne
     @JoinColumn(name = "propietario_id")
@@ -35,10 +36,52 @@ public class SolicitudEntity {
     @JoinTable(name = "detalle_solicitud", joinColumns = @JoinColumn(name = "solicitud_id"), inverseJoinColumns = @JoinColumn(name = "mascota_id"))
     private List<MascotaEntity> mascotas;
 
-    public SolicitudEntity(Timestamp fechaRegistro, boolean esAceptado, boolean estado) {
+    public SolicitudEntity(Timestamp fechaRegistro, boolean esAceptado, boolean estado, float paga) {
         this.fechaRegistro = fechaRegistro;
         this.esAceptado = esAceptado;
         this.estado = estado;
+        this.paga = paga;
+    }
+
+    
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public float getPaga() {
+        return paga;
+    }
+
+    public void setPaga(float paga) {
+        this.paga = paga;
+    }
+
+    public PropietarioEntity getPropietario() {
+        return propietario;
+    }
+
+    public void setPropietario(PropietarioEntity propietario) {
+        this.propietario = propietario;
+    }
+
+    public CuidadorEntity getCuidador() {
+        return cuidador;
+    }
+
+    public void setCuidador(CuidadorEntity cuidador) {
+        this.cuidador = cuidador;
+    }
+
+    public List<MascotaEntity> getMascotas() {
+        return mascotas;
+    }
+
+    public void setMascotas(List<MascotaEntity> mascotas) {
+        this.mascotas = mascotas;
     }
 
     public Timestamp getFechaRegistro() {

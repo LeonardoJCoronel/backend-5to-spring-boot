@@ -29,6 +29,7 @@ public class AuthenticationController {
         this.userDetailsService = userDetailsService;
     }
 
+    @SuppressWarnings("unused")
     @PostMapping
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
         if (authenticationRequest == null || authenticationRequest.getCorreo() == null || authenticationRequest.getContrasenia() == null) {

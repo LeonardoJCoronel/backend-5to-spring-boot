@@ -70,4 +70,12 @@ public class DireccionEntity {
     public void setNombreSector(String nombreSector) {
         this.nombreSector = nombreSector;
     }
+
+    public UsuarioEntity getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioEntity usuario) {
+        this.usuario = usuario;
+    }
 }

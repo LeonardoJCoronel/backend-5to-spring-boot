@@ -110,4 +110,12 @@ public class MascotaEntity {
     public void setEstado(boolean estado) {
         this.estado = estado;
     }
+
+    public PropietarioEntity getPropietario() {
+        return propietario;
+    }
+
+    public void setPropietario(PropietarioEntity propietario) {
+        this.propietario = propietario;
+    }
 }
