@@ -1,9 +1,10 @@
 package proyecto.proyecto.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,12 +66,12 @@ public class UsuarioService implements UserDetailsService {
 
     @SuppressWarnings("unlikely-arg-type")
     public void saveUsuario(UsuarioEntity usuario) {
-
         if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
             throw new HttpClientErrorException(HttpStatus.ALREADY_REPORTED);
         } else {
             String encodedPassword = passwordEncoder.encode(usuario.getContrasenia());
             usuario.setContrasenia(encodedPassword);
+            usuario.setFechaRegistro(LocalDateTime.now());
             UsuarioEntity guardarUsuario = usuarioRepository.save(usuario);
             if (guardarUsuario.getRoles().contains(RolEnum.ROL_CUIDADOR)) {
                 CuidadorEntity cuidador = new CuidadorEntity(true, 0);
@@ -81,7 +82,6 @@ public class UsuarioService implements UserDetailsService {
                 propietario.setUsuario(guardarUsuario);
                 propietarioRepository.save(propietario);
             }
-
         }
     }
 
@@ -103,6 +103,7 @@ public class UsuarioService implements UserDetailsService {
             usuarioExistente.setEstado(usuario.isEstado());
             usuarioExistente.setIdentificacion(usuario.getIdentificacion());
             usuarioExistente.setTelefono(usuario.getTelefono());
+
             return usuarioRepository.save(usuarioExistente);
         } else {
             throw new ResourceNotFoundException("Usuario", "id", id);
@@ -121,5 +122,4 @@ public class UsuarioService implements UserDetailsService {
 
         return new User(user.getCorreo(), user.getContrasenia(), authorities);
     }
-
 }

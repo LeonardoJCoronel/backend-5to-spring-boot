@@ -15,8 +15,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "usuario")
 public class UsuarioEntity {
 
     @Id
@@ -116,6 +119,11 @@ public class UsuarioEntity {
     public List<Integer> getDireccionesIds() {
         return direcciones != null ? direcciones.stream().map(DireccionEntity::getId).collect(Collectors.toList())
                 : Collections.emptyList();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.fechaRegistro = LocalDateTime.now();
     }
 
     public LocalDateTime getFechaRegistro() {

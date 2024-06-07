@@ -32,6 +32,10 @@ public class SolicitudEntity {
     @JoinColumn(name = "cuidador_id")
     private CuidadorEntity cuidador;
 
+    @ManyToOne
+    @JoinColumn(name = "catagoria_id")
+    private CatalogoEntity catalogo;
+
     @ManyToMany
     @JoinTable(name = "detalle_solicitud", joinColumns = @JoinColumn(name = "solicitud_id"), inverseJoinColumns = @JoinColumn(name = "mascota_id"))
     private List<MascotaEntity> mascotas;
@@ -43,7 +47,6 @@ public class SolicitudEntity {
         this.paga = paga;
     }
 
-    
     public int getId() {
         return id;
     }
@@ -106,6 +109,14 @@ public class SolicitudEntity {
 
     public void setEstado(boolean estado) {
         this.estado = estado;
+    }
+
+    public CatalogoEntity getCatalogo() {
+        return catalogo;
+    }
+
+    public void setCatalogo(CatalogoEntity catalogo) {
+        this.catalogo = catalogo;
     }
 
 }

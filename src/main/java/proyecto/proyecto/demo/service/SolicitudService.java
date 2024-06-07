@@ -36,6 +36,7 @@ public class SolicitudService {
             existingSolicitud.setPropietario(solicitud.getPropietario());
             existingSolicitud.setCuidador(solicitud.getCuidador());
             existingSolicitud.setMascotas(solicitud.getMascotas());
+            existingSolicitud.setCatalogo(solicitud.getCatalogo());
             return solicitudRepository.save(existingSolicitud);
         }).orElseThrow(() -> new ResourceNotFoundException("Solicitud", "id", id));
     }

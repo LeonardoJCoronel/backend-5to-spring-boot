@@ -19,7 +19,7 @@ public class MascotaEntity {
     private int edad;
     private String alergias;
     private String discapacidades;
-    private String TipoSangre;
+    private String tipoSangre;
     private String descripcion;
     private boolean estado;
 
@@ -34,7 +34,7 @@ public class MascotaEntity {
         this.edad = edad;
         this.alergias = alergias;
         this.discapacidades = discapacidades;
-        TipoSangre = tipoSangre;
+        this.tipoSangre = tipoSangre;
         this.descripcion = descripcion;
         this.estado = estado;
     }
@@ -88,11 +88,11 @@ public class MascotaEntity {
     }
 
     public String getTipoSangre() {
-        return TipoSangre;
+        return tipoSangre;
     }
 
     public void setTipoSangre(String tipoSangre) {
-        TipoSangre = tipoSangre;
+        this.tipoSangre = tipoSangre;
     }
 
     public String getDescripcion() {
