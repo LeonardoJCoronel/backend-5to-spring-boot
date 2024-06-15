@@ -60,11 +60,10 @@ public class UsuarioService implements UserDetailsService {
         return usuarioRepository.existsById(id);
     }
 
-    public Optional<?> findByEmail(String email) {
+    public Optional<UsuarioEntity> findByEmail(String email) {
         return usuarioRepository.findByCorreo(email);
     }
 
-    @SuppressWarnings("unlikely-arg-type")
     public void saveUsuario(UsuarioEntity usuario) {
         if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
             throw new HttpClientErrorException(HttpStatus.ALREADY_REPORTED);
@@ -73,14 +72,16 @@ public class UsuarioService implements UserDetailsService {
             usuario.setContrasenia(encodedPassword);
             usuario.setFechaRegistro(LocalDateTime.now());
             UsuarioEntity guardarUsuario = usuarioRepository.save(usuario);
-            if (guardarUsuario.getRoles().contains(RolEnum.ROL_CUIDADOR)) {
-                CuidadorEntity cuidador = new CuidadorEntity(true, 0);
-                cuidador.setUsuario(guardarUsuario);
-                cuidadorRepository.save(cuidador);
-            } else if (guardarUsuario.getRoles().contains(RolEnum.ROL_PROPIETARIO)) {
-                PropietarioEntity propietario = new PropietarioEntity(true);
-                propietario.setUsuario(guardarUsuario);
-                propietarioRepository.save(propietario);
+            for (RolEntity rol : guardarUsuario.getRoles()) {
+                if (rol.getRolNombre() == RolEnum.ROL_CUIDADOR) {
+                    CuidadorEntity cuidador = new CuidadorEntity();
+                    cuidador.setUsuario(guardarUsuario);
+                    cuidadorRepository.save(cuidador);
+                } else if (rol.getRolNombre() == RolEnum.ROL_PROPIETARIO) {
+                    PropietarioEntity propietario = new PropietarioEntity(true);
+                    propietario.setUsuario(guardarUsuario);
+                    propietarioRepository.save(propietario);
+                }
             }
         }
     }
@@ -89,25 +90,24 @@ public class UsuarioService implements UserDetailsService {
         usuarioRepository.deleteById(id);
     }
 
-    public UsuarioEntity updateUsuario(int id, UsuarioEntity usuario) {
-        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findById(id);
-        if (usuarioOptional.isPresent()) {
-            UsuarioEntity usuarioExistente = usuarioOptional.get();
+    public UsuarioEntity updateUsuario(int id, UsuarioEntity usuarioDetails) {
 
-            usuarioExistente.setCorreo(usuario.getCorreo());
-            usuarioExistente.setNombre(usuario.getNombre());
-            usuarioExistente.setApellido(usuario.getApellido());
-            usuarioExistente.setContrasenia(usuario.getContrasenia());
-            usuarioExistente.setDirecciones(usuario.getDirecciones());
-            usuarioExistente.setEsAceptado(usuario.isEsAceptado());
-            usuarioExistente.setEstado(usuario.isEstado());
-            usuarioExistente.setIdentificacion(usuario.getIdentificacion());
-            usuarioExistente.setTelefono(usuario.getTelefono());
+        UsuarioEntity usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "id", id));
 
-            return usuarioRepository.save(usuarioExistente);
-        } else {
-            throw new ResourceNotFoundException("Usuario", "id", id);
-        }
+        usuario.setNombre(usuarioDetails.getNombre());
+        usuario.setApellido(usuarioDetails.getApellido());
+        usuario.setCorreo(usuarioDetails.getCorreo());
+        usuario.setEsAceptado(usuarioDetails.isEsAceptado());
+        usuario.setEstado(usuarioDetails.isEstado());
+        usuario.setIdentificacion(usuarioDetails.getIdentificacion());
+        usuario.setTelefono(usuarioDetails.getTelefono());
+
+        // Limpiar la lista de direcciones actual y agregar las nuevas direcciones
+        usuario.getDirecciones().clear();
+        usuario.getDirecciones().addAll(usuarioDetails.getDirecciones());
+
+        return usuarioRepository.save(usuario);
     }
 
     @Override

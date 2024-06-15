@@ -21,6 +21,10 @@ public class CuidadorService {
         return cuidadorRepository.findAll();
     }
 
+    public Optional<CuidadorEntity> getByUsuarioId(int usuarioId) {
+        return cuidadorRepository.findByUsuarioId(usuarioId);
+    }
+
     public Optional<CuidadorEntity> findById(int id) {
         return cuidadorRepository.findById(id);
     }

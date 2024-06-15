@@ -14,23 +14,28 @@ public class CuidadorEntity {
     @Id
     @GeneratedValue
     private int id;
-    private boolean estado;
+    private Boolean estado;
     private int rating;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private UsuarioEntity usuario;
 
-    public CuidadorEntity(boolean estado, int rating) {
-        this.estado = estado;
-        this.rating = rating;
+    public CuidadorEntity() {
     }
 
-    public boolean isEstado() {
+    public CuidadorEntity(int id, Boolean estado, int rating, UsuarioEntity usuario) {
+        this.id = id;
+        this.estado = estado;
+        this.rating = rating;
+        this.usuario = usuario;
+    }
+
+    public Boolean isEstado() {
         return estado;
     }
 
-    public void setEstado(boolean estado) {
+    public void setEstado(Boolean estado) {
         this.estado = estado;
     }
 
@@ -50,5 +55,12 @@ public class CuidadorEntity {
         this.usuario = usuario;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
 }

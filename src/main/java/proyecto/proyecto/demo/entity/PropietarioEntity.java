@@ -1,6 +1,9 @@
 package proyecto.proyecto.demo.entity;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -18,24 +21,34 @@ public class PropietarioEntity {
     @Id
     @GeneratedValue
     private int id;
-    private boolean estado;
+    private Boolean estado;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private UsuarioEntity usuario;
 
-    @OneToMany(mappedBy = "propietario", cascade = CascadeType.ALL)
-    private List<MascotaEntity> mascotas;
+    @OneToMany(mappedBy = "propietario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<MascotaEntity> mascotas = new ArrayList<>();
 
-    public PropietarioEntity(boolean estado) {
+    public PropietarioEntity() {
+    }
+
+    public PropietarioEntity(int id, Boolean estado, UsuarioEntity usuario) {
+        this.id = id;
+        this.estado = estado;
+        this.usuario = usuario;
+    }
+
+    public PropietarioEntity(Boolean estado) {
         this.estado = estado;
     }
 
-    public boolean isEstado() {
+    public Boolean isEstado() {
         return estado;
     }
 
-    public void setEstado(boolean estado) {
+    public void setEstado(Boolean estado) {
         this.estado = estado;
     }
 
@@ -46,5 +59,21 @@ public class PropietarioEntity {
     public void setUsuario(UsuarioEntity usuario) {
         this.usuario = usuario;
     }
-    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<MascotaEntity> getMascotas() {
+        return mascotas;
+    }
+
+    public void setMascotas(List<MascotaEntity> mascotas) {
+        this.mascotas = mascotas;
+    }
+
 }

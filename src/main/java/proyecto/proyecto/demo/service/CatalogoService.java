@@ -1,46 +1,55 @@
 package proyecto.proyecto.demo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import proyecto.proyecto.demo.entity.CatalogoEntity;
-import proyecto.proyecto.demo.repository.CatalogoRepository;
-
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
+import proyecto.proyecto.demo.entity.CatalogoEntity;
+import proyecto.proyecto.demo.exceptions.ResourceNotFoundException;
+import proyecto.proyecto.demo.repository.CatalogoRepository;
+
 @Service
+@Transactional
 public class CatalogoService {
 
     @Autowired
     private CatalogoRepository catalogoRepository;
 
-    public List<CatalogoEntity> getAllCatalogos() {
+    public List<CatalogoEntity> getList() {
         return catalogoRepository.findAll();
     }
 
-    public Optional<CatalogoEntity> getCatalogoById(int id) {
+    public Optional<CatalogoEntity> getById(Integer id) {
         return catalogoRepository.findById(id);
     }
 
-    public CatalogoEntity createCatalogo(CatalogoEntity catalogoEntity) {
-        return catalogoRepository.save(catalogoEntity);
+    public void save(CatalogoEntity catalogo) {
+        catalogoRepository.save(catalogo);
     }
 
-    public Optional<CatalogoEntity> updateCatalogo(int id, CatalogoEntity catalogoEntity) {
-        return catalogoRepository.findById(id).map(existingCatalogo -> {
-            existingCatalogo.setNombreCatalogo(catalogoEntity.getNombreCatalogo());
-            existingCatalogo.setValor(catalogoEntity.getValor());
-            existingCatalogo.setEstado(catalogoEntity.isEstado());
-            return catalogoRepository.save(existingCatalogo);
-        });
+    public void deleteById(Integer id) {
+        catalogoRepository.deleteById(id);
     }
 
-    public boolean deleteCatalogo(int id) {
-        if (catalogoRepository.existsById(id)) {
-            catalogoRepository.deleteById(id);
-            return true;
+    public boolean existById(Integer id){
+        return catalogoRepository.existsById(id);
+    }
+
+    public CatalogoEntity update(Integer id, CatalogoEntity catalogoDetails){
+        Optional<CatalogoEntity> catalogoOptional = catalogoRepository.findById(id);
+        if (catalogoOptional.isPresent()) {
+            CatalogoEntity catalogoExistente = catalogoOptional.get();
+
+            catalogoExistente.setNombreCatalogo(catalogoDetails.getNombreCatalogo());
+            catalogoExistente.setValor(catalogoDetails.getValor());
+            catalogoExistente.setEstado(catalogoDetails.getEstado());
+
+            return catalogoRepository.save(catalogoExistente);
         } else {
-            return false;
+            throw new ResourceNotFoundException("Catalogo", "id", id);
         }
     }
 }

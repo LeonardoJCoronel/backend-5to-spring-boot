@@ -1,50 +1,65 @@
 package proyecto.proyecto.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import proyecto.proyecto.demo.entity.CatalogoEntity;
-import proyecto.proyecto.demo.service.CatalogoService;
-
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import proyecto.proyecto.demo.entity.CatalogoEntity;
+import proyecto.proyecto.demo.exceptions.ResourceNotFoundException;
+import proyecto.proyecto.demo.service.CatalogoService;
 
 @RestController
 @RequestMapping("/catalogo")
+@CrossOrigin(origins = "http://localhost:4200")
 public class CatalogoController {
 
     @Autowired
     private CatalogoService catalogoService;
 
     @GetMapping("/getList")
-    public List<CatalogoEntity> getAllCatalogos() {
-        return catalogoService.getAllCatalogos();
+    public ResponseEntity<List<CatalogoEntity>> getCatalogoList(){
+        List<CatalogoEntity> list = catalogoService.getList();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/getById/{id}")
-    public ResponseEntity<CatalogoEntity> getCatalogoById(@PathVariable int id) {
-        Optional<CatalogoEntity> catalogo = catalogoService.getCatalogoById(id);
-        return catalogo.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping("/save")
-    public CatalogoEntity createCatalogo(@RequestBody CatalogoEntity catalogoEntity) {
-        return catalogoService.createCatalogo(catalogoEntity);
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<CatalogoEntity> updateCatalogo(@PathVariable int id, @RequestBody CatalogoEntity catalogoEntity) {
-        Optional<CatalogoEntity> updatedCatalogo = catalogoService.updateCatalogo(id, catalogoEntity);
-        return updatedCatalogo.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<CatalogoEntity> getById(@PathVariable("id") int id) {
+        if (!catalogoService.existById(id)) {
+            throw new ResourceNotFoundException("Catalogo", "id", id);
+        } else {
+            CatalogoEntity catalogo = catalogoService.getById(id).get();
+            return new ResponseEntity<>(catalogo, HttpStatus.OK);
+        }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteCatalogo(@PathVariable int id) {
-        boolean deleted = catalogoService.deleteCatalogo(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
+    public void deleteCatalogo(@PathVariable("id") int id){
+        catalogoService.deleteById(id);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<CatalogoEntity> updateCatalogo(@RequestBody CatalogoEntity catalogo, @PathVariable("id") int id) {
+        if (!catalogoService.existById(id)) {
+            throw new ResourceNotFoundException("Catalogo", "id", id);
         } else {
-            return ResponseEntity.notFound().build();
+            CatalogoEntity catalogoActualizado = catalogoService.update(id, catalogo);
+            return new ResponseEntity<>(catalogoActualizado, HttpStatus.OK);
         }
+    }
+
+    @PostMapping("/save")
+    public void saveCatalogo(@RequestBody CatalogoEntity catalogo){
+        catalogoService.save(catalogo);
     }
 }

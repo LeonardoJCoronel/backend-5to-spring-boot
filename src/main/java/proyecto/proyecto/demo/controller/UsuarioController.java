@@ -53,6 +53,14 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/getByEmail/{correo}")
+    public ResponseEntity<UsuarioEntity> getByEmail(@PathVariable("correo") String correo) {
+
+        UsuarioEntity usuario = usuarioService.findByEmail(correo).get();
+        return new ResponseEntity<UsuarioEntity>(usuario, HttpStatus.OK);
+
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @PostMapping("/save")
     public ResponseEntity<?> saveUsuario(@RequestBody UsuarioEntity nuevoUsuario, BindingResult bindingResult) {
@@ -63,14 +71,14 @@ public class UsuarioController {
         Set<RolEntity> roles = new HashSet<>();
         for (RolEntity rol : nuevoUsuario.getRoles()) {
             RolEnum rolEnum = RolEnum.valueOf(rol.getRolNombre().name());
-            roles.add(rolService.getByRolNombre(rolEnum).orElseThrow(() -> new ResourceNotFoundException("Rol", "rolNombre", nuevoUsuario.getId())));
+            roles.add(rolService.getByRolNombre(rolEnum)
+                    .orElseThrow(() -> new ResourceNotFoundException("Rol", "rolNombre", nuevoUsuario.getId())));
         }
         nuevoUsuario.setRoles(roles);
 
         usuarioService.saveUsuario(nuevoUsuario);
         return new ResponseEntity(new MensajeDto("Usuario guardado"), HttpStatus.CREATED);
     }
-
 
     @PutMapping("/update/{id}")
     public ResponseEntity<UsuarioEntity> updateUsuario(@RequestBody UsuarioEntity usuario, @PathVariable("id") int id) {

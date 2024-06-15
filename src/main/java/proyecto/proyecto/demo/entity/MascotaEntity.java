@@ -1,8 +1,11 @@
 package proyecto.proyecto.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -13,10 +16,8 @@ public class MascotaEntity {
     @Id
     @GeneratedValue
     private int id;
-    private boolean esPerro;
-    private boolean esGato;
     private String nombre;
-    private int edad;
+    private float edad;
     private String alergias;
     private String discapacidades;
     private String tipoSangre;
@@ -24,12 +25,20 @@ public class MascotaEntity {
     private boolean estado;
 
     @ManyToOne
+    @JoinColumn(name = "tipo_mascota_id")
+    private CatalogoEntity tipoMascota;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    @JsonBackReference
     private PropietarioEntity propietario;
 
-    public MascotaEntity(boolean esPerro, boolean esGato, String nombre, int edad, String alergias,
+    public MascotaEntity() {
+    }
+
+    public MascotaEntity(int id, String nombre, float edad, String alergias,
             String discapacidades, String tipoSangre, String descripcion, boolean estado) {
-        this.esPerro = esPerro;
-        this.esGato = esGato;
+        this.id = id;
         this.nombre = nombre;
         this.edad = edad;
         this.alergias = alergias;
@@ -37,22 +46,6 @@ public class MascotaEntity {
         this.tipoSangre = tipoSangre;
         this.descripcion = descripcion;
         this.estado = estado;
-    }
-
-    public boolean isEsPerro() {
-        return esPerro;
-    }
-
-    public void setEsPerro(boolean esPerro) {
-        this.esPerro = esPerro;
-    }
-
-    public boolean isEsGato() {
-        return esGato;
-    }
-
-    public void setEsGato(boolean esGato) {
-        this.esGato = esGato;
     }
 
     public String getNombre() {
@@ -63,11 +56,11 @@ public class MascotaEntity {
         this.nombre = nombre;
     }
 
-    public int getEdad() {
+    public float getEdad() {
         return edad;
     }
 
-    public void setEdad(int edad) {
+    public void setEdad(float edad) {
         this.edad = edad;
     }
 
@@ -117,5 +110,21 @@ public class MascotaEntity {
 
     public void setPropietario(PropietarioEntity propietario) {
         this.propietario = propietario;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public CatalogoEntity getTipoMascota() {
+        return tipoMascota;
+    }
+
+    public void setTipoMascota(CatalogoEntity tipoMascota) {
+        this.tipoMascota = tipoMascota;
     }
 }

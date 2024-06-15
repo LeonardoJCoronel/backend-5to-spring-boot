@@ -1,10 +1,12 @@
 package proyecto.proyecto.demo.entity;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -15,7 +17,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -39,12 +40,11 @@ public class UsuarioEntity {
     @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))
     private Set<RolEntity> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<DireccionEntity> direcciones;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<DireccionEntity> direcciones = new ArrayList<>();
 
-    public UsuarioEntity() {
-        // Constructor sin parámetros requerido por JPA
-    }
+    public UsuarioEntity() {}
 
     public UsuarioEntity(int id, String nombre, String apellido, String correo, String contrasenia,
             LocalDateTime fechaRegistro, Boolean esAceptado, Boolean estado, String identificacion, String telefono) {
@@ -114,16 +114,6 @@ public class UsuarioEntity {
 
     public void setDirecciones(List<DireccionEntity> direcciones) {
         this.direcciones = direcciones;
-    }
-
-    public List<Integer> getDireccionesIds() {
-        return direcciones != null ? direcciones.stream().map(DireccionEntity::getId).collect(Collectors.toList())
-                : Collections.emptyList();
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        this.fechaRegistro = LocalDateTime.now();
     }
 
     public LocalDateTime getFechaRegistro() {

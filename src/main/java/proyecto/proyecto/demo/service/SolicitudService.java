@@ -6,6 +6,7 @@ import proyecto.proyecto.demo.entity.SolicitudEntity;
 import proyecto.proyecto.demo.exceptions.ResourceNotFoundException;
 import proyecto.proyecto.demo.repository.SolicitudRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,19 +25,16 @@ public class SolicitudService {
     }
 
     public SolicitudEntity createSolicitud(SolicitudEntity solicitud) {
+        solicitud.setFechaRegistro(LocalDateTime.now());
+        solicitud.setCuidador(null);
         return solicitudRepository.save(solicitud);
     }
 
     public SolicitudEntity updateSolicitud(int id, SolicitudEntity solicitud) {
         return solicitudRepository.findById(id).map(existingSolicitud -> {
-            existingSolicitud.setFechaRegistro(solicitud.getFechaRegistro());
             existingSolicitud.setEsAceptado(solicitud.isEsAceptado());
             existingSolicitud.setEstado(solicitud.isEstado());
-            existingSolicitud.setPaga(solicitud.getPaga());
-            existingSolicitud.setPropietario(solicitud.getPropietario());
             existingSolicitud.setCuidador(solicitud.getCuidador());
-            existingSolicitud.setMascotas(solicitud.getMascotas());
-            existingSolicitud.setCatalogo(solicitud.getCatalogo());
             return solicitudRepository.save(existingSolicitud);
         }).orElseThrow(() -> new ResourceNotFoundException("Solicitud", "id", id));
     }
