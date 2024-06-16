@@ -75,6 +75,7 @@ public class UsuarioService implements UserDetailsService {
             for (RolEntity rol : guardarUsuario.getRoles()) {
                 if (rol.getRolNombre() == RolEnum.ROL_CUIDADOR) {
                     CuidadorEntity cuidador = new CuidadorEntity();
+                    cuidador.setEstado(true);
                     cuidador.setUsuario(guardarUsuario);
                     cuidadorRepository.save(cuidador);
                 } else if (rol.getRolNombre() == RolEnum.ROL_PROPIETARIO) {
