@@ -44,8 +44,8 @@ public class CuidadorController {
 
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<CuidadorEntity> getByUsuarioId(@PathVariable("usuarioId") int usuarioId) {
-        Optional<CuidadorEntity> propietarios = cuidadorService.getByUsuarioId(usuarioId);
-        return new ResponseEntity<CuidadorEntity>(propietarios.get(), HttpStatus.OK);
+        Optional<CuidadorEntity> cuidadores = cuidadorService.getByUsuarioId(usuarioId);
+        return new ResponseEntity<CuidadorEntity>(cuidadores.get(), HttpStatus.OK);
     }
 
     @PutMapping("/update")

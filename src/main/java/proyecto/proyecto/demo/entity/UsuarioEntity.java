@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.List;
 
+import jakarta.validation.constraints.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,14 +27,38 @@ public class UsuarioEntity {
     @Id
     @GeneratedValue
     private int id;
+
+    @NotNull
+    @Size(message = "El nombre debe tener entre 2 y 35 caracteres", min = 2, max = 35)
     private String nombre;
+
+    @NotNull
+    @Size(message = "El nombre debe tener entre 2 y 60 caracteres", min = 2, max = 60)
     private String apellido;
+
+    @NotNull
+    @Email
     private String correo;
+    
+    @NotNull
+    @Size(message = "La contraseña tiene un limite de 255 caracteres", min = 2, max = 255)
     private String contrasenia;
+
+    @NotNull
     private LocalDateTime fechaRegistro;
+
+    @NotNull
     private Boolean esAceptado;
+
+    @NotNull
     private Boolean estado;
+
+    @NotNull
+    @Size(message = "La identificación debe tener entre 2 y 10 caracteres", min = 2, max = 10)
     private String identificacion;
+
+    @NotNull
+    @Size(message = "El telefono debe tener entre 2 y 10 caracteres", min = 2, max = 10)
     private String telefono;
 
     @ManyToMany

@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "mascota")
@@ -16,12 +18,30 @@ public class MascotaEntity {
     @Id
     @GeneratedValue
     private int id;
+
+    @NotNull
+    @Size(message = "El nombre de la mascota debe tener entre 2 y 15 caracteres", min = 2, max = 15)
     private String nombre;
+    
+    @NotNull
     private float edad;
+    
+    @NotNull
+    @Size(message = "La descripción de las alertas debe tener entre 2 y 255 caracteres", min = 2, max = 255)
     private String alergias;
+    
+    @NotNull
+    @Size(message = "Las descripción de las discapacidades debe tener entre 2 y 255 caracteres", min = 2, max = 255)
     private String discapacidades;
+    
+    @NotNull
     private String tipoSangre;
+    
+    @NotNull
+    @Size(message = "La descripción de la mascota debe tener entre 2 y 255 caracteres", min = 2, max = 255)
     private String descripcion;
+    
+    @NotNull
     private boolean estado;
 
     @ManyToOne

@@ -3,6 +3,7 @@ package proyecto.proyecto.demo.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.*;
 
 @Entity
 public class CatalogoEntity {
@@ -10,8 +11,12 @@ public class CatalogoEntity {
     @Id
     @GeneratedValue
     private int id;
+
+    @NotNull
     private String nombreCatalogo;
+    @NotNull
     private String valor;
+    @NotNull
     private Boolean estado;
 
     public CatalogoEntity(){}
